@@ -2,8 +2,8 @@ import pygame
 import time
 
 #criar listas
-nomeimg = ['backgroundportafechada', 'ffrente', 'ftras', 'fesquerda', 'fdireita', 'perguntacama', 'dormindo'] 
-locimg = [r"imagens\pixil-frame-4.png", r"imagens\pixil-frame-ff.png", r"imagens\pixil-frame-ft.png", r"imagens\pixil-frame-fe.png", r"imagens\pixil-frame-fd.png", r"imagens\pixil-frame-ws.png",r"imagens\pixil-frame-5.png"]
+nomeimg = ['backgroundportafechada', 'ffrente', 'ftras', 'fesquerda', 'fdireita', 'perguntacama', 'dormindo', 'perguntalivro', 'livro'] 
+locimg = [r"imagens\pixil-frame-4.png", r"imagens\pixil-frame-ff.png", r"imagens\pixil-frame-ft.png", r"imagens\pixil-frame-fe.png", r"imagens\pixil-frame-fd.png", r"imagens\pixil-frame-ws.png",r"imagens\pixil-frame-5.png", r"imagens\pixil-frame-rd.png", r"imagens\pixil-frame-j.png"]
 
 #criando as imagens
 for c in range(len(nomeimg)):
@@ -14,7 +14,9 @@ ffrente = pygame.transform.scale(ffrente, (60, 80))
 ftras = pygame.transform.scale(ftras, (60, 80))
 fesquerda = pygame.transform.scale(fesquerda, (60, 80)) 
 fdireita = pygame.transform.scale(fdireita, (60, 80))
-perguntacama = pygame.transform.scale(perguntacama, (450, 130)) 
+perguntacama = pygame.transform.scale(perguntacama, (450, 130))
+perguntalivro = pygame.transform.scale(perguntalivro, (450, 130))
+livro = pygame.transform.scale(livro, (450, 390))
 
 # configurando a tela
 tela = pygame.display.set_mode((600,600))
@@ -45,6 +47,10 @@ while run:
         if cordx == 100:
             if cordy >=100 and cordy <= 220:
                 estadotela = "perguntacama"
+        #captação livro
+        if cordx >= 420 and cordx <= 540:
+            if cordy >= 120 and cordy <= 200:
+                estadotela = "perguntalivro"
         #eventos de movimentação
         for evento in pygame.event.get():
             if evento.type == pygame.QUIT:
@@ -56,8 +62,7 @@ while run:
                         if cordx > 99:
                             cordy -= 20
                     if cordy >= 250:
-                        cordy -= 20
-                    
+                        cordy -= 20       
                 if evento.key == pygame.K_a:
                     estadof = "esquerda"
                     if cordx < 110:
@@ -87,6 +92,30 @@ while run:
                 if evento.key == pygame.K_y:
                     estadotela = "dormindo"
 
+    #pergunta se quer ler o diário
+    if estadotela == "perguntalivro":
+        tela.fill((200,200,200))
+        tela.blit(backgroundportafechada,(0,0))
+        tela.blit(perguntalivro, (20,450))
+        for evento in pygame.event.get():
+            if evento.type == pygame.QUIT:
+                run = False
+            if evento.type == pygame.KEYDOWN:
+                if evento.key == pygame.K_n:
+                    if cordx > 420 and cordx < 540:
+                        if cordy >= 200:
+                            cordy += 20
+                        else:
+                            cordy -= 20
+                    elif cordx <= 420:
+                        cordx -= 20
+                    elif cordx >= 540:
+                        cordx += 20
+
+                    estadotela = "portafechada"
+                if evento.key == pygame.K_y:
+                    estadotela = "lendolivro"
+
     #fantasma frames
     if estadof == "frente":
         tela.blit(ffrente,((cordx,cordy)))
@@ -97,6 +126,27 @@ while run:
     if estadof == "direita":
         tela.blit(fdireita,((cordx,cordy)))
 
+    #diário na tela
+    if estadotela == "lendolivro":
+        tela.fill((200,200,200))
+        tela.blit(backgroundportafechada,(0,0))
+        tela.blit(livro, (80,150))
+        for evento in pygame.event.get():
+            if evento.type == pygame.QUIT:
+                run = False
+            if evento.type == pygame.KEYDOWN:
+                if evento.key == pygame.K_x:
+                    if cordx > 420 and cordx < 540:
+                        if cordy >= 200:
+                            cordy += 20
+                        else:
+                            cordy -= 20
+                    elif cordx <= 420:
+                        cordx -= 20
+                    elif cordx >= 540:
+                        cordx += 20
+                    estadotela = "portafechada"
+
     #tela dormindo
     if estadotela == "dormindo":
         tela.fill((200,200,200))
@@ -106,7 +156,7 @@ while run:
                 run = False
             if evento.type == pygame.KEYDOWN:
                 if evento.key == pygame.K_d or evento.key == pygame.K_s:
-                    cordx = 120
+                    cordx += 20
                     estadotela = "portafechada"
     
     #mostrando temporariamente as coordenadas
